@@ -181,11 +181,13 @@ export function entityLength(e: Entity): number {
   }
   let len = 0;
   for (let i = 1; i < e.pts.length; i++) {
-    len += Math.hypot(e.pts[i].x - e.pts[i - 1].x, e.pts[i].y - e.pts[i - 1].y);
+    const a = e.pts[i - 1]!;
+    const b = e.pts[i]!;
+    len += Math.hypot(b.x - a.x, b.y - a.y);
   }
   if (e.closed && e.pts.length > 2) {
-    const a = e.pts[e.pts.length - 1];
-    const b = e.pts[0];
+    const a = e.pts[e.pts.length - 1]!;
+    const b = e.pts[0]!;
     len += Math.hypot(b.x - a.x, b.y - a.y);
   }
   return len;

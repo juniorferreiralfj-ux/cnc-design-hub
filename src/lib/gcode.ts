@@ -45,10 +45,14 @@ function entityPasses(e: Entity, z: number, p: CutParams, out: string[]) {
       `G3 X${f(en.x)} Y${f(en.y)} I${f(e.cx - s.x)} J${f(e.cy - s.y)} F${p.feed}`,
     );
   } else {
-    const pts = e.closed ? [...e.pts, e.pts[0]] : e.pts;
-    out.push(`G0 X${f(pts[0].x)} Y${f(pts[0].y)}`);
+    const pts = e.closed ? [...e.pts, e.pts[0]!] : e.pts;
+    const first = pts[0]!;
+    out.push(`G0 X${f(first.x)} Y${f(first.y)}`);
     out.push(`G1 Z${f(z)} F${p.plungeFeed}`);
-    for (let i = 1; i < pts.length; i++) g1(pts[i].x, pts[i].y);
+    for (let i = 1; i < pts.length; i++) {
+      const pt = pts[i]!;
+      g1(pt.x, pt.y);
+    }
   }
   out.push(`G0 Z${f(p.safeZ)}`);
 }
