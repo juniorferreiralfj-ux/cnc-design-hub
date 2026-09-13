@@ -77,7 +77,7 @@ export function parseDxf(text: string): DxfDoc {
     null;
 
   for (const g of groups) {
-    const type = g[0].value.trim().toUpperCase();
+    const type = (g[0]?.value ?? "").trim().toUpperCase();
     const layer = (get(g, 8) ?? "0").trim();
 
     switch (type) {
