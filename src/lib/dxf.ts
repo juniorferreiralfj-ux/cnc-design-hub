@@ -26,7 +26,7 @@ function tokenize(text: string): Pair[] {
   const lines = text.split(/\r\n|\r|\n/);
   const pairs: Pair[] = [];
   for (let i = 0; i < lines.length - 1; i += 2) {
-    const code = parseInt(lines[i].trim(), 10);
+    const code = parseInt((lines[i] ?? "").trim(), 10);
     if (Number.isNaN(code)) continue;
     pairs.push({ code, value: lines[i + 1] ?? "" });
   }
@@ -46,8 +46,10 @@ export function parseDxf(text: string): DxfDoc {
   let start = 0;
   let end = pairs.length;
   for (let i = 0; i < pairs.length; i++) {
-    if (pairs[i].code === 2 && pairs[i].value.trim() === "ENTITIES") start = i + 1;
-    if (start && pairs[i].code === 0 && pairs[i].value.trim() === "ENDSEC" && i > start) {
+    const pair = pairs[i];
+    if (!pair) continue;
+    if (pair.code === 2 && pair.value.trim() === "ENTITIES") start = i + 1;
+    if (start && pair.code === 0 && pair.value.trim() === "ENDSEC" && i > start) {
       end = i;
       break;
     }
@@ -58,6 +60,7 @@ export function parseDxf(text: string): DxfDoc {
   let current: Pair[] | null = null;
   for (let i = start; i < end; i++) {
     const p = pairs[i];
+    if (!p) continue;
     if (p.code === 0) {
       if (current) groups.push(current);
       current = [p];
